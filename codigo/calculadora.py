@@ -136,15 +136,28 @@ class Funcoes:
     def tratamento_para_retorno(self,retorno):
         string = retorno
         for nome in self.funcoes_nomes:
-            fragemento_do_retorno = retorno
-            dif = 0
-            dif_nome = len(nome) + 3
-            while nome in fragemento_do_retorno:
-                posicao_inicial = fragemento_do_retorno.find(nome) + dif
-                posicao_final = posicao_inicial + len(nome)
-                fragemento_do_retorno = fragemento_do_retorno[posicao_final:]
-                dif = dif_nome
+
+            fragmento_do_retorno = string
+            acrescimo = 0
+
+            while nome in fragmento_do_retorno:
+
+                posicao_inicial_fragmento_de_retorno = fragmento_do_retorno.find(nome)
+                posicao_final_fragmento_de_retorno = posicao_inicial_fragmento_de_retorno + len(nome)
+
+                fragmento_do_retorno = (
+                        fragmento_do_retorno[:posicao_inicial_fragmento_de_retorno] +
+                        fragmento_do_retorno[posicao_final_fragmento_de_retorno:])
+
+                posicao_inicial = acrescimo + posicao_inicial_fragmento_de_retorno
+                posicao_final = acrescimo + posicao_final_fragmento_de_retorno
+
+                acrescimo = 3 + len(nome)
+
                 string = string[:posicao_inicial] + "_" + f"{nome}" + "()" + string[posicao_final:]
+
+
+
         return string
 
     def fabrica_funcoes(self,nome_fantasia,resultado):
@@ -179,7 +192,3 @@ class Funcoes:
     def resp(self):
         reload(f)
         return f.resp()
-
-calc = Funcoes()
-
-calc.tratamento_para_retorno("x*2 +x**2")
