@@ -5,13 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a872a667-2909-45a0-a10f-2a7db0c0116f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/codigo/interface_grafica.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/codigo/funcoes.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/calculadora_cientifica_prototipo.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/calculadora_cientifica_prototipo.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/codigo/calculadora.py" beforeDir="false" afterPath="$PROJECT_DIR$/codigo/calculadora.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/codigo/constantes.py" beforeDir="false" afterPath="$PROJECT_DIR$/codigo/constantes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/codigo/entrada.py" beforeDir="false" afterPath="$PROJECT_DIR$/codigo/entrada.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/codigo/funcao.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/codigo/interface_grafica.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/codigo/principal.py" beforeDir="false" afterPath="$PROJECT_DIR$/codigo/principal.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/codigo/saida.py" beforeDir="false" afterPath="$PROJECT_DIR$/codigo/saida.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dependencies.txt" beforeDir="false" afterPath="$PROJECT_DIR$/dependencies.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,7 +43,12 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Python.calculadora.executor": "Debug",
+    "Python.entrada.executor": "Debug",
+    "Python.funcoes.executor": "Run",
     "Python.interface_grafica.executor": "Run",
+    "Python.principal.executor": "Run",
+    "Python.saida.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "main"
   }
@@ -46,7 +56,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-975db3bf15a3-31b6be0877a2-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-241.18034.82" />
+        <option value="bundled-python-sdk-0e3be3396995-c546a90a8094-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-242.23339.19" />
       </set>
     </attachedChunks>
   </component>

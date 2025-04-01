@@ -1,140 +1,185 @@
-a = input()
-b = input()
-base =10
-tamanho_mantissa = 100
+from importlib import reload
+
+import funcoes as f
+from constantes import FUNCAO_RESPOSTA,NOME_FUNCAO_RESPOSTA,PROPRIEDADES_FUNCAO_RESPOSTA
+
+class Funcoes:
+    def __init__(self):
+        self.__posicao_livre = 0
+        self.__funcoes_props = []
+        self.__funcoes_nomes = {}
+        self.__indice = -1
+        self.atualiza_nomes()
 
 
+    #================================================================
+    @property
+    def posicao_livre(self):
+        return self.__posicao_livre
 
-def tratamento(num,exp,entrada) -> tuple:
-    if "." in entrada:
-        vetores = entrada.split(".")
-        if vetores[0]:
-            inteiros = int(vetores[0])
+    @posicao_livre.setter
+    def posicao_livre(self, valor):
+        self.__posicao_livre = valor
+
+    @property
+    def funcoes_props(self):
+        return self.__funcoes_props
+
+    @funcoes_props.setter
+    def funcoes_props(self, valor):
+        self.__funcoes_props = valor
+
+    @property
+    def funcoes_nomes(self):
+        return self.__funcoes_nomes
+
+    @funcoes_nomes.setter
+    def funcoes_nomes(self, valor):
+        self.__funcoes_nomes = valor
+
+    @property
+    def indice(self):
+        return self.__indice
+
+    @indice.setter
+    def indice(self, valor):
+        self.__indice = valor
+
+    # ================================================================
+
+    def atualiza_nomes(self):
+        with open("nomes_das_funcoes.txt") as arquivo:
+            for linha in arquivo.readlines():
+                entrada = linha.strip()
+                valor = entrada.split(",")
+                self.indice += 1
+                self.funcoes_props.append(list(map(int,[valor[1],valor[2]])))
+                self.funcoes_nomes[valor[0]] = self.indice
+            if len(self.funcoes_props) > 0:
+                self.posicao_livre = self.funcoes_props[-1][1]
+
+    def nova_funcao(self,nome_da_funcao: str = "resp",
+                    resultado: str = "0",
+                    nome_fantasia: str = "resp") -> None:
+
+        with open("funcoes.py","a",encoding="utf-8") as arquivo:
+            posicao_comeco = self.posicao_livre
+
+            string = (f"def {nome_da_funcao}():\n"+
+                      f"\treturn {resultado}\n"
+                      )
+
+            arquivo.write(string)
+
+            self.posicao_livre = posicao_final = posicao_comeco + len(string)
+            self.indice += 1
+
+            self.funcoes_props.append([posicao_comeco,posicao_final])
+            self.funcoes_nomes[nome_fantasia] = self.indice
+            with open("nomes_das_funcoes.txt","a") as nomes:
+                nomes.write(nome_fantasia + f",{posicao_comeco},{posicao_final}\n")
+
+    def editar_funcao(self,nome_da_funcao: str,
+                      resultado: str = "0") -> None:
+        original = ""
+        with open("funcoes.py","r",encoding="utf-8") as leitor:
+            original = leitor.read()
+
+        with open("funcoes.py","w",encoding="utf-8") as editor:
+            indice = self.funcoes_nomes[nome_da_funcao]
+
+            posicao_comeco = self.funcoes_props[indice][0]
+            posicao_final = self.funcoes_props[indice][1]
+
+            string =   (f"def {nome_da_funcao}():\n" +
+                        f"\treturn {resultado}\n"
+                       )
+
+            original = (original[:posicao_comeco]    +
+                        string                       +
+                        original[posicao_final:]
+                        )
+
+            editor.write(original)
+
+            posicao_final = posicao_comeco + len(string)
+
+            self.corrige_posicoes(indice,posicao_final)
+
+    def corrige_posicoes(self,indice,posicao_final):
+
+            self.funcoes_props[indice][1] = posicao_final
+
+            with open("nomes_das_funcoes.txt") as leitura:
+                propriedades = [linha.strip().split(",") for linha in leitura.readlines()]
+                with open("nomes_das_funcoes.txt","w") as escritor:
+                    propriedades[indice][2] = str(posicao_final)
+
+                    for posicao in range(indice + 1, len(self.funcoes_props)):
+                        comprimento = self.funcoes_props[posicao][1] - self.funcoes_props[posicao][0]
+                        self.funcoes_props[posicao][0] = posicao_final
+                        propriedades[posicao][1] = str(posicao_final)
+                        posicao_final = posicao_final + comprimento
+                        self.funcoes_props[posicao][1] = posicao_final
+                        propriedades[posicao][2] = str(posicao_final)
+                    string_saida = ""
+                    for linha in propriedades:
+                        for elemento in linha:
+                            string_saida += elemento + ","
+                        string_saida = string_saida[:len(string_saida) - 1]
+                        string_saida += "\n"
+                    escritor.write(string_saida)
+
+    def tratamento_para_nome(self,nome):
+        return f"_{nome}"
+
+    def tratamento_para_retorno(self,retorno):
+        string = retorno
+        for nome in self.funcoes_nomes:
+            fragemento_do_retorno = retorno
+            dif = 0
+            dif_nome = len(nome) + 3
+            while nome in fragemento_do_retorno:
+                posicao_inicial = fragemento_do_retorno.find(nome) + dif
+                posicao_final = posicao_inicial + len(nome)
+                fragemento_do_retorno = fragemento_do_retorno[posicao_final:]
+                dif = dif_nome
+                string = string[:posicao_inicial] + "_" + f"{nome}" + "()" + string[posicao_final:]
+        return string
+
+    def fabrica_funcoes(self,nome_fantasia,resultado):
+
+        nome_funcao = self.tratamento_para_nome(nome_fantasia)
+        resp = self.tratamento_para_retorno(resultado)
+
+        if nome_fantasia in self.funcoes_nomes:
+            self.editar_funcao(nome_funcao,resp)
         else:
-            inteiros = 0
+            self.nova_funcao(nome_funcao,resp,nome_fantasia)
 
-        decimais = [int(char) for char in vetores[1]]
+        self.editar_funcao("resp",f"{nome_funcao}()")
 
-        if inteiros:
-            inteiros = str(inteiros)
-            inteiros = [int(char) for char in inteiros]
-            exp = len(inteiros)
-            num = inteiros + decimais
-        else:
-            i = 0
-            for num in decimais:
-                if num:
-                    exp = i
-                    break
+    def reiniciar(self):
 
-                i -= 1
+        with open("funcoes.py", "w") as editor:
 
-            if vetores[1]:
-                decimais = int(vetores[1])
-            else:
-                decimais = 0
+            editor.write(FUNCAO_RESPOSTA)
 
-            decimais = str(decimais)
+            self.posicao_livre = len(FUNCAO_RESPOSTA)
 
-            decimais = [int(char) for char in decimais]
-            num = decimais
+            self.indice = 0
+            self.funcoes_props = [[self.indice,self.posicao_livre]]
 
-    else:
-        num = [int(char) for char in entrada]
-        exp = len(num)
-    return num,exp
+            self.funcoes_nomes = {}
+            self.funcoes_nomes[NOME_FUNCAO_RESPOSTA] = self.indice
 
+        with open("nomes_das_funcoes.txt","w") as escritor:
+            escritor.write(PROPRIEDADES_FUNCAO_RESPOSTA)
 
+    def resp(self):
+        reload(f)
+        return f.resp()
 
-#inserir numeros na mantissa
-def corrige_mantissa(mantissa,num) -> None:
-    k = 0
-    while len(num) > k < len(mantissa):
-        mantissa[k] = num[k]
-        k += 1
-    return mantissa
+calc = Funcoes()
 
-
-def retorna_mantissa_texto(mantissa) -> str:
-    numero_impresso = ""
-    p = 0
-    while p < len(mantissa):
-        numero = mantissa[p]
-        contador_de_zero = 0
-        if numero:
-            numero_impresso += str(numero)
-        else:
-            contador_de_zero += 1
-            while p < len(mantissa) - 1 and (not numero):
-                p += 1
-                numero = mantissa[p]
-                if numero:
-                    numero_impresso += ("0"*contador_de_zero) + str(numero)
-                else:
-                    contador_de_zero += 1
-        p += 1
-    return numero_impresso
-
-def somar(a,exp_a,b,exp_b):
-
-    maior = menor = 0
-    mantissa = [0]*tamanho_mantissa
-    exp = 0
-
-    if exp_a > exp_b:
-        maior = exp_a
-        menor = exp_b
-    else:
-        maior = exp_b
-        menor = exp_a
-
-    exp = maior
-
-    for var in range(maior - menor):
-        if menor == exp_a:
-            a.insert(0,0)
-            a.pop()
-        else:
-            b.insert(0, 0)
-            b.pop()
-
-    for var in range(tamanho_mantissa-1,-1,-1):
-
-        valor = a[var] + b[var]
-
-        if valor >= base:
-            valor = valor - base
-            pos = var - 1
-            if pos > -1:
-                a[pos] += 1
-            else:
-                mantissa.insert(0,1)
-                mantissa.pop()
-
-        mantissa[var] = valor
-
-    return mantissa,exp
-
-
-
-if __name__ == "__main__":
-
-    mantissa_a = [0]*tamanho_mantissa
-    mantissa_b = [0]*tamanho_mantissa
-
-    num_a,exp_a = tratamento([],0,a)
-    num_b,exp_b = tratamento([],0,b)
-
-    mantissa_a = corrige_mantissa(mantissa_a,num_a)
-    mantissa_b = corrige_mantissa(mantissa_b, num_b)
-
-    numero_impresso_a = retorna_mantissa_texto(mantissa_a)
-    numero_impresso_b = retorna_mantissa_texto(mantissa_b)
-
-    print(f"a = 0.{numero_impresso_a} x {base} ^ ( {exp_a} )")
-    print(f"b = 0.{numero_impresso_b} x {base} ^ ( {exp_b} )")
-
-    mantissa_soma,exp_soma = somar(mantissa_a, exp_a, mantissa_b, exp_b)
-    numero_impresso_soma = retorna_mantissa_texto(mantissa_soma)
-
-    print(f"soma = 0.{numero_impresso_soma} x {base} ^ ( {exp_soma} )")
+calc.tratamento_para_retorno("x*2 +x**2")
