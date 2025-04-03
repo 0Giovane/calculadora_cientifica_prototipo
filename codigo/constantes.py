@@ -1,10 +1,9 @@
 import flet as ft
 
 
-TITULO = "Calculadora Científica (by Giovane)"
+TITULO = "Solucionador Matemático (by Giovane)"
 
-DIMENSOES = [515,658]
-COMPRIMENTO_DA_MANTISSA = 100
+DIMENSOES = [516,659]
 COR_DE_FUNDO = "#c2c3fc"
 
 BASE_DECIMAL = 10
@@ -20,3 +19,5 @@ ARQUIVO_FUNCOES = "funcoes.py"
 ARQUIVO_TXT = "nomes_das_funcoes.txt"
 
 CLASSE_1 = ft.core.control_event.ControlEvent
+
+COMPRIMENTO_DA_MANTISSA = 100

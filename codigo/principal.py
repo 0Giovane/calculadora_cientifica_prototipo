@@ -102,23 +102,26 @@ def principal(pagina: ft.Page):
 
     linha_9 = ft.Row(botoes_0)
 
-    app.pagina.add(ft.Container(width=650,
+    coluna_1 = ft.Column(
+                        controls=[linha_0,
+                                  linha_1,
+                                  linha_2,
+                                  linha_3,
+                                  linha_4,
+                                  linha_5,
+                                  linha_6,
+                                  linha_7,
+                                  linha_8,
+                                  linha_9
+                                  ]
+                        )
+
+
+    app.pagina.add(ft.Container(width=850,
                                 height=500,
                                 border_radius=ft.border_radius.all(20),
                                 padding=20,
-                                content=ft.Column(
-                                    controls=[linha_0,
-                                              linha_1,
-                                              linha_2,
-                                              linha_3,
-                                              linha_4,
-                                              linha_5,
-                                              linha_6,
-                                              linha_7,
-                                              linha_8,
-                                              linha_9
-                                              ]
-                                )
+                                content= coluna_1
                                 )
                    )
 

@@ -1,6 +1,7 @@
 import flet as ft
 
 import calculadora
+from codigo.constantes import NOME_FUNCAO_RESPOSTA
 from constantes import CLASSE_1
 
 class AplicacaoCalculadora:
@@ -9,7 +10,7 @@ class AplicacaoCalculadora:
         self.__pagina = pagina
 
         self.__campo_entrada = (
-            ft.TextField("", hint_text="x = 0", multiline=True)
+            ft.TextField("", hint_text="x = 0")
         )
 
         self.__texto_entrada = ft.Text("")
@@ -17,6 +18,8 @@ class AplicacaoCalculadora:
         self.define_layout(titulo,
                            coords,
                            cor_de_fundo)
+
+        self.__calculadora = calculadora.Funcoes()
 
     # ================================================================
 
@@ -44,6 +47,14 @@ class AplicacaoCalculadora:
     def texto_entrada(self, valor) -> None:
         self.__texto_entrada = valor
 
+    @property
+    def calculadora(self):
+        return self.__calculadora
+
+    @calculadora.setter
+    def calculadora(self, valor):
+        self.__calculadora = valor
+
     # ================================================================
 
     def define_layout(self, titulo: str,
@@ -66,36 +77,38 @@ class AplicacaoCalculadora:
             self.reiniciar_calculadora()
 
     def reiniciar_calculadora(self) -> None:
-        calc = calculadora.Funcoes()
-        calc.reiniciar()
+        self.calculadora.reiniciar()
         self.texto_entrada.value = ""
+        self.campo_entrada.value= ""
 
     def possui_igual(self, string: str) -> str:
         if "=" in string:
             return string
         else:
-            if "x" in string:
-                while "x" in string:
-                    posicao = string.find("x")
-                    calc = calculadora.Funcoes()
+            if NOME_FUNCAO_RESPOSTA in string:
+                while NOME_FUNCAO_RESPOSTA in string:
+                    posicao = string.find(NOME_FUNCAO_RESPOSTA)
                     string = (
                             string[:posicao] +
-                            f"{calc.resp()}" +
-                            string[posicao + 3:])
-            return "x=" + string
+                            f"{self.calculadora.resp()}" +
+                            string[posicao + len(NOME_FUNCAO_RESPOSTA):])
+            return f"{NOME_FUNCAO_RESPOSTA}=" + string
+
+    def retorna_nome_e_resultado(self,string):
+        posicao = string.find("=")
+        nome = string[:posicao]
+        resultado = string[posicao + 1:]
+        return nome,resultado
 
     def sanitiza_entrada(self) -> tuple[str, str]:
         string = self.possui_igual(
             self.campo_entrada.value.replace(" ", ""))
-        vetor = string.split("=")
-        nome, resultado = vetor[0], vetor[1]
-        return nome, resultado
+        return self.retorna_nome_e_resultado(string)
 
     def calcular(self) -> str:
-        calc = calculadora.Funcoes()
         nome, resultado = self.sanitiza_entrada()
-        calc.fabrica_funcoes(nome, resultado)
-        return f"{nome} = {calc.resp()}"
+        self.calculadora.fabrica_funcoes(nome, resultado)
+        return f"{nome} = {self.calculadora.resp()}"
 
 
 class BotaoDeCalculadora(ft.ElevatedButton):

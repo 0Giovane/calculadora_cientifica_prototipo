@@ -11,9 +11,8 @@
       <change beforePath="$PROJECT_DIR$/codigo/calculadora.py" beforeDir="false" afterPath="$PROJECT_DIR$/codigo/calculadora.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/codigo/constantes.py" beforeDir="false" afterPath="$PROJECT_DIR$/codigo/constantes.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/codigo/entrada.py" beforeDir="false" afterPath="$PROJECT_DIR$/codigo/entrada.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/codigo/funcoes.py" beforeDir="false" afterPath="$PROJECT_DIR$/codigo/funcoes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/codigo/nomes_das_funcoes.txt" beforeDir="false" afterPath="$PROJECT_DIR$/codigo/nomes_das_funcoes.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/codigo/principal.py" beforeDir="false" afterPath="$PROJECT_DIR$/codigo/principal.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/codigo/saida.py" beforeDir="false" afterPath="$PROJECT_DIR$/codigo/saida.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,24 +37,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.calculadora.executor": "Debug",
-    "Python.entrada.executor": "Debug",
-    "Python.funcoes.executor": "Run",
-    "Python.interface_grafica.executor": "Run",
-    "Python.principal.executor": "Run",
-    "Python.saida.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "settings.editor.selected.configurable": "preferences.keymap"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.calculadora.executor&quot;: &quot;Run&quot;,
+    &quot;Python.entrada.executor&quot;: &quot;Run&quot;,
+    &quot;Python.funcoes.executor&quot;: &quot;Run&quot;,
+    &quot;Python.interface_grafica.executor&quot;: &quot;Run&quot;,
+    &quot;Python.principal.executor&quot;: &quot;Run&quot;,
+    &quot;Python.saida.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-975db3bf15a3-31b6be0877a2-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-241.18034.82" />
+        <option value="bundled-python-sdk-0e3be3396995-c546a90a8094-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-242.23339.19" />
       </set>
     </attachedChunks>
   </component>
