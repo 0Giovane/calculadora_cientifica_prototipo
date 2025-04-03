@@ -11,8 +11,10 @@
       <change beforePath="$PROJECT_DIR$/codigo/calculadora.py" beforeDir="false" afterPath="$PROJECT_DIR$/codigo/calculadora.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/codigo/constantes.py" beforeDir="false" afterPath="$PROJECT_DIR$/codigo/constantes.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/codigo/entrada.py" beforeDir="false" afterPath="$PROJECT_DIR$/codigo/entrada.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/codigo/funcoes.py" beforeDir="false" afterPath="$PROJECT_DIR$/codigo/funcoes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/codigo/nomes_das_funcoes.txt" beforeDir="false" afterPath="$PROJECT_DIR$/codigo/nomes_das_funcoes.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/codigo/principal.py" beforeDir="false" afterPath="$PROJECT_DIR$/codigo/principal.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/codigo/saida.py" beforeDir="false" afterPath="$PROJECT_DIR$/codigo/saida.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dependencies.txt" beforeDir="false" afterPath="$PROJECT_DIR$/dependencies.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

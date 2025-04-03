@@ -1,5 +1,6 @@
 import flet as ft
 
+
 import calculadora
 from codigo.constantes import NOME_FUNCAO_RESPOSTA
 from constantes import CLASSE_1
@@ -10,7 +11,14 @@ class AplicacaoCalculadora:
         self.__pagina = pagina
 
         self.__campo_entrada = (
-            ft.TextField("", hint_text="x = 0")
+            ft.TextField("",
+                         hint_text="x = 0",
+                         autofocus=True,
+                         multiline=True,
+                         shift_enter=True,
+                         smart_quotes_type=True,
+                         on_submit=self.enviar_entrada,
+                         )
         )
 
         self.__texto_entrada = ft.Text("")
@@ -68,18 +76,21 @@ class AplicacaoCalculadora:
 
     def captura_acao_teclado(self,
                              tecla: ft.KeyboardEvent) -> None:
-        if tecla.key == "Enter":
-            valor = self.calcular()
-            self.campo_entrada.value = ""
-            self.texto_entrada.value = valor
-            self.pagina.update()
-        elif tecla.key == "Delete" and tecla.shift:
+        if tecla.key == "Delete" and tecla.shift:
             self.reiniciar_calculadora()
 
+    def enviar_entrada(self,elemento):
+        self.texto_entrada.value = self.calcular()
+        elemento.control.value = ""
+        self.pagina.update()
+    def enviar_entrada_botao(self):
+        self.texto_entrada.value = self.calcular()
+        self.campo_entrada.value = ""
+        self.pagina.update()
     def reiniciar_calculadora(self) -> None:
         self.calculadora.reiniciar()
         self.texto_entrada.value = ""
-        self.campo_entrada.value= ""
+        self.campo_entrada.value = ""
 
     def possui_igual(self, string: str) -> str:
         if "=" in string:
@@ -98,11 +109,12 @@ class AplicacaoCalculadora:
         posicao = string.find("=")
         nome = string[:posicao]
         resultado = string[posicao + 1:]
-        return nome,resultado
+        return nome, resultado
 
     def sanitiza_entrada(self) -> tuple[str, str]:
-        string = self.possui_igual(
-            self.campo_entrada.value.replace(" ", ""))
+        pre_tratamento = self.campo_entrada.value.replace(" ", "")
+        pre_tratamento = self.campo_entrada.value.replace("\n", "")
+        string = self.possui_igual(pre_tratamento)
         return self.retorna_nome_e_resultado(string)
 
     def calcular(self) -> str:
@@ -126,9 +138,12 @@ class BotaoDeCalculadora(ft.ElevatedButton):
 
     def botao_clicado(self, elemento: CLASSE_1) -> None:
         s = elemento.control.data
-        if s == "AC":
-            self.app.reiniciar_calculadora()
-        else:
-            self.app.campo_entrada.value += s
+        match s:
+            case "AC":
+                self.app.reiniciar_calculadora()
+            case "=":
+                self.app.enviar_entrada_botao()
+            case _:
+                self.app.campo_entrada.value += s
         self.app.pagina.update()
 

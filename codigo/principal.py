@@ -16,7 +16,7 @@ def principal(pagina: ft.Page):
 
     botoes_0 = [
         BotaoDeCalculadora("0", app),
-        BotaoDeCalculadora(",", app),
+        BotaoDeCalculadora(".", app),
         BotaoDeCalculadora("*10**", app),
         BotaoDeCalculadora("resp", app),
         BotaoDeCalculadora("=", app, "Enter")
@@ -43,7 +43,7 @@ def principal(pagina: ft.Page):
         BotaoDeCalculadora("8", app),
         BotaoDeCalculadora("9", app),
         BotaoDeCalculadora("DEL", app),
-        BotaoDeCalculadora("AC", app, "Shift + Del")
+        BotaoDeCalculadora("AC", app, "Reset: Shift + Del")
     ]
 
     botoes_4 = [
@@ -55,26 +55,26 @@ def principal(pagina: ft.Page):
     ]
 
     botoes_5 = [
-        BotaoDeCalculadora("hyp", app),
-        BotaoDeCalculadora("sen", app),
-        BotaoDeCalculadora("cos", app),
-        BotaoDeCalculadora("tan", app),
-        BotaoDeCalculadora("**(1/2)", app)
+        BotaoDeCalculadora("cbrt()", app,"raiz cúbica"),
+        BotaoDeCalculadora("sin()", app),
+        BotaoDeCalculadora("cos()", app),
+        BotaoDeCalculadora("tan()", app),
+        BotaoDeCalculadora("sqrt()", app,"raiz quadrada")
     ]
 
     botoes_6 = [
-        BotaoDeCalculadora("x**2", app),
-        BotaoDeCalculadora("x**", app),
-        BotaoDeCalculadora("log", app),
-        BotaoDeCalculadora("ln", app),
+        BotaoDeCalculadora("**2", app),
+        BotaoDeCalculadora("**", app),
+        BotaoDeCalculadora("log(, 10)", app),
+        BotaoDeCalculadora("log(, e)", app),
         BotaoDeCalculadora("**(-1)", app)
     ]
 
     botoes_7 = [
         BotaoDeCalculadora("pi", app),
         BotaoDeCalculadora("e", app),
-        BotaoDeCalculadora("!", app),
-        BotaoDeCalculadora("log_x(y)", app),
+        BotaoDeCalculadora("factorial()", app),
+        BotaoDeCalculadora("log(, )", app,"log(variável, base)"),
         BotaoDeCalculadora("**3", app)
     ]
 

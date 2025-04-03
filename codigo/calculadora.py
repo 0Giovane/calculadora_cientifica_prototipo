@@ -6,7 +6,8 @@ from constantes import (FUNCAO_RESPOSTA,
                         NOME_FUNCAO_RESPOSTA,
                         PROPRIEDADES_FUNCAO_RESPOSTA,
                         ARQUIVO_FUNCOES,
-                        ARQUIVO_TXT)
+                        ARQUIVO_TXT,
+                        IMPORT_ARQUIVO_FUNCOES)
 
 
 class Funcoes:
@@ -232,13 +233,14 @@ class Funcoes:
     def reiniciar(self) -> None:
 
         with open(ARQUIVO_FUNCOES, "w") as editor:
-            editor.write(FUNCAO_RESPOSTA)
+            editor.write(IMPORT_ARQUIVO_FUNCOES + FUNCAO_RESPOSTA)
             editor.flush()
 
-            self.posicao_livre = len(FUNCAO_RESPOSTA)
+            self.posicao_livre = len(IMPORT_ARQUIVO_FUNCOES) + len(FUNCAO_RESPOSTA)
 
             self.indice = 0
-            self.funcoes_props = [[self.indice, self.posicao_livre]]
+            self.funcoes_props = [[len(IMPORT_ARQUIVO_FUNCOES),
+                                   self.posicao_livre]]
 
             self.funcoes_nomes = {NOME_FUNCAO_RESPOSTA: self.indice}
 
@@ -251,7 +253,7 @@ class Funcoes:
             original_txt = leitura.read()
         with open(ARQUIVO_TXT) as leitura:
             posicao = self.funcoes_nomes[NOME_FUNCAO_RESPOSTA]
-            linhas =  leitura.readlines()
+            linhas = leitura.readlines()
             linha = linhas[posicao].strip().split(",")
             vetor_resp = [int(linha[1]), int(linha[2])]
 
@@ -278,13 +280,13 @@ class Funcoes:
         self.indice -= 1
         self.posicao_livre = vetor_resp[0]
 
-    def resp(self,funcao: str="") -> Any:
+    def resp(self,funcao: str = "") -> Any:
         if funcao != "" and funcao != NOME_FUNCAO_RESPOSTA:
             if funcao in self.funcoes_nomes:
                 resposta = self.tratamento_para_nome(funcao) + "()"
-                self.editar_funcao(NOME_FUNCAO_RESPOSTA,resposta,NOME_FUNCAO_RESPOSTA)
+                self.editar_funcao(NOME_FUNCAO_RESPOSTA, resposta, NOME_FUNCAO_RESPOSTA)
             else:
                 nome_da_funcao = self.tratamento_para_nome(funcao)
-                self.nova_funcao(nome_da_funcao,"0",funcao)
+                self.nova_funcao(nome_da_funcao,"0", funcao)
         reload(f)
         return f.resp()

@@ -13,7 +13,14 @@ NOME_FUNCAO_RESPOSTA = "resp"
 FUNCAO_RESPOSTA = ("def resp():\n"+
                       f"\treturn 0\n"
                       )
-PROPRIEDADES_FUNCAO_RESPOSTA = (f"resp,0,{len(FUNCAO_RESPOSTA)}\n")
+
+IMPORT_ARQUIVO_FUNCOES = ("from math import factorial, "
+                          "sqrt, comb, exp, log, fsum, degrees, "
+                          "radians, cos, sin, tan, pi, e, cbrt\n\n")
+
+PROPRIEDADES_FUNCAO_RESPOSTA = (f"resp,{len(IMPORT_ARQUIVO_FUNCOES)},"
+                                f"{len(IMPORT_ARQUIVO_FUNCOES) +
+                                   len(FUNCAO_RESPOSTA)}\n")
 
 ARQUIVO_FUNCOES = "funcoes.py"
 ARQUIVO_TXT = "nomes_das_funcoes.txt"
