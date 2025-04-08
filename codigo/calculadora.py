@@ -7,14 +7,15 @@ from constantes import (FUNCAO_RESPOSTA,
                         PROPRIEDADES_FUNCAO_RESPOSTA,
                         ARQUIVO_FUNCOES,
                         ARQUIVO_TXT,
-                        IMPORT_ARQUIVO_FUNCOES)
+                        IMPORT_ARQUIVO_FUNCOES,
+                        LISTA_FUNCOES_ESPECIAIS,
+                        RESPOSTA_PADRAO_FUNCAO_RESPOSTA)
 
 
 class Funcoes:
     def __init__(self):
         self.__posicao_livre = 0
-        self.__funcoes_props = []
-        self.__funcoes_nomes = {}
+        self.__funcoes_props = {}
         self.__indice = -1
         self.atualiza_nomes()
 
@@ -36,14 +37,6 @@ class Funcoes:
         self.__funcoes_props = valor
 
     @property
-    def funcoes_nomes(self) -> dict[Any, Any]:
-        return self.__funcoes_nomes
-
-    @funcoes_nomes.setter
-    def funcoes_nomes(self, valor) -> None:
-        self.__funcoes_nomes = valor
-
-    @property
     def indice(self) -> int:
         return self.__indice
 
@@ -62,17 +55,47 @@ class Funcoes:
                     entrada = linha.strip()
                     valor = entrada.split(",")
                     self.indice += 1
-                    self.funcoes_props.append(list(map(int, [valor[1], valor[2]])))
-                    self.funcoes_nomes[valor[0]] = self.indice
-                if len(self.funcoes_props) > 0:
-                    self.posicao_livre = self.funcoes_props[-1][1]
+                    self.funcoes_props[valor[0]] = [
+                        valor[1],int(valor[2]),
+                        int(valor[3]), int(valor[4]),
+                        int(valor[5])
+                    ]
+                    if self.indice + 1 == len(linhas):
+                        self.posicao_livre = valor[4]
             else:
                 self.reiniciar()
 
-    def nova_funcao(self, nome_da_funcao: str,
-                    resultado: str,
-                    nome_fantasia: str) -> None:
+    def reiniciar(self) -> None:
 
+        with (open(ARQUIVO_FUNCOES, "w") as editor):
+            editor.write(IMPORT_ARQUIVO_FUNCOES + FUNCAO_RESPOSTA)
+            editor.flush()
+
+            self.posicao_livre = (len(IMPORT_ARQUIVO_FUNCOES)
+                                  + len(FUNCAO_RESPOSTA))
+
+            self.indice = 0
+
+            # funcoes_props {"resp":[resposta na forma escrita
+            # , resposta na forma numérica, posição inicial,
+            # posição final,indice]}
+            self.funcoes_props = {NOME_FUNCAO_RESPOSTA:[
+                 RESPOSTA_PADRAO_FUNCAO_RESPOSTA,
+                 RESPOSTA_PADRAO_FUNCAO_RESPOSTA,
+                 len(IMPORT_ARQUIVO_FUNCOES),
+                 self.posicao_livre,
+                 self.indice]}
+
+        with open(ARQUIVO_TXT, "w") as escritor:
+            escritor.write(PROPRIEDADES_FUNCAO_RESPOSTA)
+            escritor.flush()
+
+    # ================================================================
+
+    def nova_funcao(self, nome_fantasia: str,
+                    resultado: str,
+                    resultado_entrada: str) -> None:
+        nome_da_funcao = self.tratamento_para_nome(nome_fantasia)
         with open(ARQUIVO_FUNCOES, "a") as arquivo:
             self.clean_resp()
 
@@ -86,45 +109,30 @@ class Funcoes:
 
             arquivo.write(string)
             arquivo.flush()
+
             self.indice += 1
+            indice_funcao = self.indice
 
-            self.funcoes_props.append([posicao_comeco, posicao_final])
-            self.funcoes_nomes[nome_fantasia] = self.indice
+            self.anexar_resp(nome_da_funcao, posicao_final,nome_fantasia)
+            self.corrige_props_resposta(nome_fantasia,
+                                        resultado_entrada,
+                                        posicao_comeco,
+                                        posicao_final,
+                                        indice_funcao)
 
-            with open(ARQUIVO_TXT, "a") as nomes:
-                nomes.write(nome_fantasia + f",{posicao_comeco},{posicao_final}\n")
-
-            self.anexar_resp(nome_da_funcao + "()", posicao_final)
-
-    def anexar_resp(self,nome_da_funcao,posicao_inicial):
-        with open(ARQUIVO_FUNCOES,"a") as arquivo:
-            resp = ("def resp():\n" +
-                    f"\treturn {nome_da_funcao}\n"
-                    )
-            arquivo.write(resp)
-            arquivo.flush()
-            self.posicao_livre = posicao_inicial + len(resp)
-            self.indice += 1
-            self.funcoes_props.append([posicao_inicial, self.posicao_livre])
-            self.funcoes_nomes[NOME_FUNCAO_RESPOSTA] = self.indice
-
-        with open(ARQUIVO_TXT,"a") as nomes:
-            nomes.write("resp" + f",{posicao_inicial},{self.posicao_livre}\n")
-            nomes.flush()
-
-    def editar_funcao(self, nome_da_funcao: str,
+    def editar_funcao(self, nome_fantasia: str,
                       resultado: str,
-                      nome_fantasia: str) -> None:
+                      resultado_entrada: str) -> None:
+        nome_da_funcao = self.tratamento_para_nome(nome_fantasia)
         self.clean_resp()
-        original = ""
         with open(ARQUIVO_FUNCOES) as leitor:
             original = leitor.read()
 
         with open(ARQUIVO_FUNCOES, "w") as editor:
-            indice = self.funcoes_nomes[nome_fantasia]
+            indice = self.funcoes_props[nome_fantasia][-1]
 
-            posicao_comeco = self.funcoes_props[indice][0]
-            posicao_final = self.funcoes_props[indice][1]
+            posicao_comeco = self.funcoes_props[nome_fantasia][2]
+            posicao_final = self.funcoes_props[nome_fantasia][3]
 
             string = (f"def {nome_da_funcao}():\n" +
                       f"\treturn {resultado}\n"
@@ -141,121 +149,148 @@ class Funcoes:
             posicao_final = posicao_comeco + len(string)
 
             self.corrige_posicoes(indice, posicao_final)
-            self.anexar_resp(nome_da_funcao + "()", self.posicao_livre)
+            self.anexar_resp(nome_da_funcao, self.posicao_livre,nome_fantasia)
+            self.corrige_props_resposta(nome_fantasia,
+                                        resultado_entrada,
+                                        posicao_comeco,
+                                        posicao_final,
+                                        indice,
+                                        True)
 
     def corrige_posicoes(self, indice, posicao_referencia) -> None:
 
-        self.funcoes_props[indice][1] = posicao_referencia
-
-        with open(ARQUIVO_TXT) as leitura:
+        with (open(ARQUIVO_TXT) as leitura):
             linhas = leitura.readlines()
-            propriedades = [linha.strip().split(",") for linha in linhas]
-            with open(ARQUIVO_TXT, "w") as escritor:
-                propriedades[indice][2] = str(posicao_referencia)
 
-                for posicao in range(indice + 1, len(self.funcoes_props)):
+        propriedades = [linha.strip().split(",") for linha in linhas]
 
-                    comprimento = self.funcoes_props[posicao][1] - self.funcoes_props[posicao][0]
+        for posicao in range(indice + 1, len(self.funcoes_props)):
 
-                    self.funcoes_props[posicao][0] = posicao_referencia
-                    propriedades[posicao][1] = str(posicao_referencia)
+            nome_atual = propriedades[posicao][0]
+            comprimento = (self.funcoes_props[nome_atual][3] -
+                           self.funcoes_props[nome_atual][2])
 
-                    posicao_referencia = posicao_referencia + comprimento
+            self.funcoes_props[nome_atual][2] = posicao_referencia
+            propriedades[posicao][3] = str(posicao_referencia)
 
-                    self.funcoes_props[posicao][1] = posicao_referencia
-                    propriedades[posicao][2] = str(posicao_referencia)
+            posicao_referencia = posicao_referencia + comprimento
 
-                string_saida = ""
-                for linha in propriedades:
-                    for elemento in linha:
-                        string_saida += elemento + ","
-                    string_saida = string_saida[:len(string_saida) - 1]
-                    string_saida += "\n"
-                escritor.write(string_saida)
-                escritor.flush()
+            self.funcoes_props[nome_atual][3] = posicao_referencia
+            propriedades[posicao][4] = str(posicao_referencia)
+
+        self.posicao_livre = posicao_referencia
+        string_saida = ""
+        for linha in propriedades:
+            for elemento in linha:
+                string_saida += elemento + ","
+            string_saida = string_saida[:len(string_saida) - 1]
+            string_saida += "\n"
+
+        with open(ARQUIVO_TXT, "w") as escritor:
+            escritor.write(string_saida)
+            escritor.flush()
+
+    def corrige_props_resposta(self,nome_fantasia: str,
+                                    resultado: str,
+                                    posicao_comeco: int,
+                                    posicao_final: int,
+                                    indice_funcao: int,
+                                    edicao=False) -> None:
+
+        with open(ARQUIVO_TXT) as props:
+            propriedades = props.readlines()
+
+        resposta = self.resp()
+
+        self.funcoes_props[nome_fantasia] = [
+            resultado, resposta,
+            posicao_comeco, posicao_final,
+            indice_funcao
+        ]
+        string_props = (f"{nome_fantasia},{resultado},{resposta},"
+                       f"{posicao_comeco},{posicao_final},"
+                       f"{indice_funcao}\n")
+        if not edicao:
+            propriedades.insert(-1, string_props)
+        else:
+            propriedades[indice_funcao] = string_props
+
+        with open(ARQUIVO_TXT, "w") as escritor:
+            string = ""
+            for linha in propriedades:
+                string += linha
+            escritor.write(string)
+            escritor.flush()
+
+    # ================================================================
 
     @staticmethod
     def tratamento_para_nome(nome) -> str:
-        if nome != NOME_FUNCAO_RESPOSTA:
-            if nome.isdigit():
-                nome = f"_f{nome}"
-            else:
-                nome = f"_{nome}"
-        else:
-            nome = NOME_FUNCAO_RESPOSTA
-        return nome
+        return nome if (nome == NOME_FUNCAO_RESPOSTA) else f"_{nome}"
+
+    def tratamento_nomes_fantasia(self,nome_fantasia):
+        if (nome_fantasia != NOME_FUNCAO_RESPOSTA and
+                ((nome_fantasia.isdigit()) or (
+                nome_fantasia in LISTA_FUNCOES_ESPECIAIS))):
+            nome_fantasia = f"_{nome_fantasia}"
+        return nome_fantasia
 
     def tratamento_para_retorno(self, retorno) -> str:
         string = retorno
-        for nome in self.funcoes_nomes:
+        for nome in self.funcoes_props:
 
             fragmento_do_retorno = string
             acrescimo = 0
 
             while nome in fragmento_do_retorno:
-                posicao_inicial_fragmento_de_retorno = fragmento_do_retorno.find(nome)
-                posicao_final_fragmento_de_retorno = posicao_inicial_fragmento_de_retorno + len(nome)
+                posicao_inicial_fragmento_de_retorno = (
+                    fragmento_do_retorno.find(nome))
+                posicao_final_fragmento_de_retorno = (
+                    posicao_inicial_fragmento_de_retorno + len(nome))
 
                 fragmento_do_retorno = (
-                        fragmento_do_retorno[:posicao_inicial_fragmento_de_retorno] +
-                        fragmento_do_retorno[posicao_final_fragmento_de_retorno:])
+                  fragmento_do_retorno[:posicao_inicial_fragmento_de_retorno] +
+                  fragmento_do_retorno[posicao_final_fragmento_de_retorno:])
 
-                posicao_inicial = acrescimo + posicao_inicial_fragmento_de_retorno
-                posicao_final = acrescimo + posicao_final_fragmento_de_retorno
+                posicao_inicial = (acrescimo +
+                               posicao_inicial_fragmento_de_retorno)
+                posicao_final = (acrescimo +
+                                 posicao_final_fragmento_de_retorno)
 
-                acrescimo = 3 + len(nome)
-
-                string = string[:posicao_inicial] + "_" + f"{nome}" + "()" + string[posicao_final:]
+                if nome != NOME_FUNCAO_RESPOSTA:
+                    acrescimo += 3 + len(nome)
+                    string = (string[:posicao_inicial] + "_" +
+                              f"{nome}" + "()" + string[posicao_final:])
+                else:
+                    resposta = str(self.resp())
+                    acrescimo += len(resposta)
+                    string = (string[:posicao_inicial] +
+                              f"{resposta}" + string[posicao_final:])
 
         return string
 
-    def tratamento_nomes_fantasia(self,nome_fantasia):
-        if nome_fantasia.isdigit():
-            nome_fantasia = f"f{nome_fantasia}"
-        return nome_fantasia
+    # ================================================================
 
     def fabrica_funcoes(self, nome_fantasia, resultado) -> None:
 
-        nome_funcao = Funcoes.tratamento_para_nome(nome_fantasia)
-        resp = self.tratamento_para_retorno(resultado)
         nome_fantasia = self.tratamento_nomes_fantasia(nome_fantasia)
+        resp = self.tratamento_para_retorno(resultado)
 
         if nome_fantasia == NOME_FUNCAO_RESPOSTA:
-            indice = self.funcoes_nomes[NOME_FUNCAO_RESPOSTA]
-            posicao_inicial = self.funcoes_props[indice][0]
-            self.clean_resp()
-            self.anexar_resp(resp,posicao_inicial)
-        elif nome_fantasia in self.funcoes_nomes:
-            self.editar_funcao(nome_funcao, resp,nome_fantasia)
+            self.modifica_resp(resp,resultado)
+        elif nome_fantasia in self.funcoes_props:
+            self.editar_funcao(nome_fantasia, resp,resultado)
         else:
-            self.nova_funcao(nome_funcao, resp, nome_fantasia)
+            self.nova_funcao(nome_fantasia, resp,resultado)
 
-    def reiniciar(self) -> None:
-
-        with open(ARQUIVO_FUNCOES, "w") as editor:
-            editor.write(IMPORT_ARQUIVO_FUNCOES + FUNCAO_RESPOSTA)
-            editor.flush()
-
-            self.posicao_livre = len(IMPORT_ARQUIVO_FUNCOES) + len(FUNCAO_RESPOSTA)
-
-            self.indice = 0
-            self.funcoes_props = [[len(IMPORT_ARQUIVO_FUNCOES),
-                                   self.posicao_livre]]
-
-            self.funcoes_nomes = {NOME_FUNCAO_RESPOSTA: self.indice}
-
-        with open(ARQUIVO_TXT, "w") as escritor:
-            escritor.write(PROPRIEDADES_FUNCAO_RESPOSTA)
-            escritor.flush()
+    # ================================================================
 
     def clean_resp(self):
         with open(ARQUIVO_TXT) as leitura:
-            original_txt = leitura.read()
-        with open(ARQUIVO_TXT) as leitura:
-            posicao = self.funcoes_nomes[NOME_FUNCAO_RESPOSTA]
+            posicao = self.funcoes_props[NOME_FUNCAO_RESPOSTA][-1]
             linhas = leitura.readlines()
             linha = linhas[posicao].strip().split(",")
-            vetor_resp = [int(linha[1]), int(linha[2])]
+            vetor_resp = [int(linha[3]), int(linha[4])]
 
         with open(ARQUIVO_TXT, "w") as escritor:
             string_txt = ""
@@ -275,18 +310,76 @@ class Funcoes:
             editor.write(string)
             editor.flush()
 
-        self.funcoes_props.pop(posicao)
-        self.funcoes_nomes.pop(NOME_FUNCAO_RESPOSTA)
+        self.funcoes_props.pop(NOME_FUNCAO_RESPOSTA)
         self.indice -= 1
         self.posicao_livre = vetor_resp[0]
 
+    def anexar_resp(self,nome_da_funcao,posicao_inicial,nome_fantasia):
+        with open(ARQUIVO_FUNCOES,"a") as arquivo:
+            resp = (f"def {NOME_FUNCAO_RESPOSTA}():\n" +
+                    f"\treturn {nome_da_funcao}()\n"
+                    )
+            arquivo.write(resp)
+            arquivo.flush()
+            self.posicao_livre = posicao_inicial + len(resp)
+            self.indice += 1
+            resposta = self.resp()
+            self.funcoes_props[NOME_FUNCAO_RESPOSTA] =[nome_fantasia,
+                                                       resposta,
+                                                       posicao_inicial,
+                                                       self.posicao_livre,
+                                                       self.indice]
+
+        with open(ARQUIVO_TXT,"a") as props:
+            props.write(f"{NOME_FUNCAO_RESPOSTA},{nome_fantasia},{resposta},"
+                                 f"{posicao_inicial},{self.posicao_livre},"
+                                  f"{self.indice}\n")
+            props.flush()
+
+    def modifica_resp(self, retorno: str,
+                      retorno_entrada: str) -> None:
+        indice = self.funcoes_props[NOME_FUNCAO_RESPOSTA][-1]
+        posicao_inicial = self.funcoes_props[NOME_FUNCAO_RESPOSTA][2]
+
+        with open(ARQUIVO_FUNCOES) as leitura:
+            original = leitura.read()
+        with open(ARQUIVO_TXT) as leitor:
+            original_txt = leitor.readlines()
+
+        with open(ARQUIVO_FUNCOES,"w") as editor:
+            resp = (f"def {NOME_FUNCAO_RESPOSTA}():\n" +
+                    f"\treturn {retorno}\n"
+                    )
+
+            string = (original[:posicao_inicial] +
+                      resp)
+
+            self.posicao_livre = posicao_inicial + len(resp)
+            self.funcoes_props[NOME_FUNCAO_RESPOSTA][3] = self.posicao_livre
+            editor.write(string)
+            editor.flush()
+
+        resposta = self.resp()
+
+        self.funcoes_props[NOME_FUNCAO_RESPOSTA][0] = retorno_entrada
+        self.funcoes_props[NOME_FUNCAO_RESPOSTA][1] = resposta
+
+        with open(ARQUIVO_TXT,"w") as escritor:
+            original_txt[indice] = (f"{NOME_FUNCAO_RESPOSTA},{retorno_entrada},{resposta},"
+                                    f"{posicao_inicial},{self.posicao_livre},"
+                                    f"{indice}\n")
+            string = ""
+            for linha in original_txt:
+                string += linha
+            escritor.write(string)
+            escritor.flush()
+
     def resp(self,funcao: str = "") -> Any:
         if funcao != "" and funcao != NOME_FUNCAO_RESPOSTA:
-            if funcao in self.funcoes_nomes:
-                resposta = self.tratamento_para_nome(funcao) + "()"
-                self.editar_funcao(NOME_FUNCAO_RESPOSTA, resposta, NOME_FUNCAO_RESPOSTA)
+            if funcao in self.funcoes_props:
+                nome = self.tratamento_para_nome(funcao)
+                self.modifica_resp(nome + "()",nome)
             else:
-                nome_da_funcao = self.tratamento_para_nome(funcao)
-                self.nova_funcao(nome_da_funcao,"0", funcao)
+                self.nova_funcao(funcao,"0","0")
         reload(f)
         return f.resp()

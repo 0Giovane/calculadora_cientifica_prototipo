@@ -3,24 +3,31 @@ import flet as ft
 
 TITULO = "Solucionador Matemático (by Giovane)"
 
-DIMENSOES = [516,659]
+DIMENSOES = [1216,659]
 COR_DE_FUNDO = "#c2c3fc"
 
 BASE_DECIMAL = 10
 BASE_BINARIA = 2
 
 NOME_FUNCAO_RESPOSTA = "resp"
-FUNCAO_RESPOSTA = ("def resp():\n"+
-                      f"\treturn 0\n"
+RESPOSTA_PADRAO_FUNCAO_RESPOSTA = "0"
+FUNCAO_RESPOSTA = (f"def {NOME_FUNCAO_RESPOSTA}():\n"+
+                      f"\treturn {RESPOSTA_PADRAO_FUNCAO_RESPOSTA}\n"
                       )
 
-IMPORT_ARQUIVO_FUNCOES = ("from math import factorial, "
-                          "sqrt, comb, exp, log, fsum, degrees, "
-                          "radians, cos, sin, tan, pi, e, cbrt\n\n")
+LISTA_FUNCOES_ESPECIAIS = ["factorial","sqrt","comb","exp","log","fsum",
+                           "degrees","radians","cos","sin","tan","pi",
+                           "e","cbrt"]
 
-PROPRIEDADES_FUNCAO_RESPOSTA = (f"resp,{len(IMPORT_ARQUIVO_FUNCOES)},"
+IMPORT_ARQUIVO_FUNCOES = ("from math import (factorial, sqrt, comb, exp, log, fsum,\n"
+                          "\t\t\t\t  degrees, radians, cos, sin, tan, pi, e,\n"
+                          "\t\t\t\t  cbrt)\n\n")
+
+
+PROPRIEDADES_FUNCAO_RESPOSTA = (f"{NOME_FUNCAO_RESPOSTA},{RESPOSTA_PADRAO_FUNCAO_RESPOSTA},"
+                                f"{RESPOSTA_PADRAO_FUNCAO_RESPOSTA},{len(IMPORT_ARQUIVO_FUNCOES)},"
                                 f"{len(IMPORT_ARQUIVO_FUNCOES) +
-                                   len(FUNCAO_RESPOSTA)}\n")
+                                   len(FUNCAO_RESPOSTA)},0\n")
 
 ARQUIVO_FUNCOES = "funcoes.py"
 ARQUIVO_TXT = "nomes_das_funcoes.txt"

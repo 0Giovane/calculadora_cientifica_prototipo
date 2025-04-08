@@ -18,8 +18,8 @@ def principal(pagina: ft.Page):
         BotaoDeCalculadora("0", app),
         BotaoDeCalculadora(".", app),
         BotaoDeCalculadora("*10**", app),
-        BotaoDeCalculadora("resp", app),
-        BotaoDeCalculadora("=", app, "Enter")
+        BotaoDeCalculadora("=", app),
+        BotaoDeCalculadora("resp", app, "Enter")
     ]
 
     botoes_1 = [
@@ -116,14 +116,37 @@ def principal(pagina: ft.Page):
                                   ]
                         )
 
+    funcoes = ft.Container(width=200,
+                             height=500,
+                             border_radius=ft.border_radius.all(20),
+                             bgcolor=ft.Colors.BLUE_50,
+                             padding=20,
+                             content=app.historico_funcoes
+                             )
 
-    app.pagina.add(ft.Container(width=850,
-                                height=500,
-                                border_radius=ft.border_radius.all(20),
-                                padding=20,
-                                content= coluna_1
-                                )
-                   )
+    historico = ft.Container(width=200,
+                             height=500,
+                             border_radius=ft.border_radius.all(20),
+                             bgcolor=ft.Colors.AMBER,
+                             padding=20,
+                             content=app.historico
+                             )
+
+    exibicao_calculadora = ft.Container(width=650,
+                                        height=500,
+                                        border_radius=ft.border_radius.all(20),
+                                        padding=20,
+                                        content= coluna_1
+                                        )
+
+
+    linha = ft.Row([funcoes,
+                    ft.VerticalDivider(),
+                    historico,
+                    ft.VerticalDivider(),
+                    exibicao_calculadora])
+
+    app.pagina.add(linha)
 
 
 ft.app(principal)
