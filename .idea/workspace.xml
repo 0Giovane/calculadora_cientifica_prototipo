@@ -13,7 +13,6 @@
       <change beforePath="$PROJECT_DIR$/codigo/entrada.py" beforeDir="false" afterPath="$PROJECT_DIR$/codigo/entrada.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/codigo/funcoes.py" beforeDir="false" afterPath="$PROJECT_DIR$/codigo/funcoes.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/codigo/nomes_das_funcoes.txt" beforeDir="false" afterPath="$PROJECT_DIR$/codigo/nomes_das_funcoes.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/codigo/principal.py" beforeDir="false" afterPath="$PROJECT_DIR$/codigo/principal.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,7 +39,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Python.calculadora.executor": "Debug",
+    "Python.calculadora.executor": "Run",
     "Python.constantes.executor": "Run",
     "Python.entrada.executor": "Run",
     "Python.funcoes.executor": "Run",
@@ -56,7 +55,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-0e3be3396995-c546a90a8094-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-242.23339.19" />
+        <option value="bundled-python-sdk-975db3bf15a3-31b6be0877a2-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-241.18034.82" />
       </set>
     </attachedChunks>
   </component>

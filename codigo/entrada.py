@@ -21,7 +21,7 @@ class AplicacaoCalculadora:
                          )
         )
 
-        self.__texto_entrada = ft.Markdown()
+        self.__texto_entrada = ft.Text()
 
         self.define_layout(titulo,
                            coords,
@@ -30,10 +30,10 @@ class AplicacaoCalculadora:
         self.__calculadora = calculadora.Funcoes()
 
         self.__historico = ft.ListView(expand=True,
-                            controls=[])
+                                       controls=[])
 
         self.__historico_funcoes = ft.ListView(expand=True,
-                            controls=[])
+                                               controls=[])
 
         self.reset_historico()
 
@@ -110,32 +110,33 @@ class AplicacaoCalculadora:
                               string_funcao) -> None:
 
         elemento = ft.Dismissible(content=ft.ListTile(title=ft.Text(string)),
-                           dismiss_direction=ft.DismissDirection.HORIZONTAL,
-                           background=ft.Container(bgcolor=ft.Colors.RED),
-                           secondary_background=ft.Container(bgcolor=ft.Colors.RED),
-                           on_dismiss=self.apagar_historico,
-                           dismiss_thresholds={
-                               ft.DismissDirection.END_TO_START: 0.2,
-                               ft.DismissDirection.START_TO_END: 0.2,
-                           }
-                           )
+                                  dismiss_direction=ft.DismissDirection.HORIZONTAL,
+                                  background=ft.Container(bgcolor=ft.Colors.RED),
+                                  secondary_background=ft.Container(bgcolor=ft.Colors.RED),
+                                  on_dismiss=self.apagar_historico,
+                                  dismiss_thresholds={
+                                    ft.DismissDirection.END_TO_START: 0.2,
+                                    ft.DismissDirection.START_TO_END: 0.2,
+                                                     }
+                                  )
         elemento_funcao = ft.Dismissible(content=ft.ListTile(title=ft.Text(string_funcao)),
-                           dismiss_direction=ft.DismissDirection.HORIZONTAL,
-                           background=ft.Container(bgcolor=ft.Colors.RED),
-                           secondary_background=ft.Container(bgcolor=ft.Colors.RED),
-                           on_dismiss=self.apagar_historico,
-                           dismiss_thresholds={
-                               ft.DismissDirection.END_TO_START: 0.2,
-                               ft.DismissDirection.START_TO_END: 0.2,
-                           }
-                           )
+                                         dismiss_direction=ft.DismissDirection.HORIZONTAL,
+                                         background=ft.Container(bgcolor=ft.Colors.RED),
+                                         secondary_background=ft.Container(bgcolor=ft.Colors.RED),
+                                         on_dismiss=self.apagar_historico,
+                                         dismiss_thresholds={
+                                           ft.DismissDirection.END_TO_START: 0.2,
+                                           ft.DismissDirection.START_TO_END: 0.2,
+                                                             }
+                                         )
 
-        self.historico.controls.insert(0,elemento)
-        self.historico_funcoes.controls.insert(0,elemento_funcao)
-
+        self.historico.controls.insert(0, elemento)
+        self.historico_funcoes.controls.insert(0, elemento_funcao)
 
     def apagar_historico(self, elemento):
-        elemento.control.parent.controls.remove(elemento.control)
+        posicao = elemento.control.parent.controls.index(elemento.control)
+        self.historico_funcoes.controls.pop(posicao)
+        self.historico.controls.pop(posicao)
         self.pagina.update()
 
     # ================================================================

@@ -21,7 +21,7 @@ LISTA_FUNCOES_ESPECIAIS = ["factorial","sqrt","comb","exp","log","fsum",
 
 IMPORT_ARQUIVO_FUNCOES = ("from math import (factorial, sqrt, comb, exp, log, fsum,\n"
                           "\t\t\t\t  degrees, radians, cos, sin, tan, pi, e,\n"
-                          "\t\t\t\t  cbrt)\n\n")
+                          "\t\t\t\t  cbrt)\n\n\n")
 
 
 PROPRIEDADES_FUNCAO_RESPOSTA = (f"{NOME_FUNCAO_RESPOSTA},{RESPOSTA_PADRAO_FUNCAO_RESPOSTA},"

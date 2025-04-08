@@ -29,7 +29,7 @@ class Funcoes:
         self.__posicao_livre = valor
 
     @property
-    def funcoes_props(self) -> list[Any]:
+    def funcoes_props(self) -> dict[Any, Any]:
         return self.__funcoes_props
 
     @funcoes_props.setter
@@ -56,7 +56,7 @@ class Funcoes:
                     valor = entrada.split(",")
                     self.indice += 1
                     self.funcoes_props[valor[0]] = [
-                        valor[1],int(valor[2]),
+                        valor[1],float(valor[2]),
                         int(valor[3]), int(valor[4]),
                         int(valor[5])
                     ]
@@ -113,7 +113,8 @@ class Funcoes:
             self.indice += 1
             indice_funcao = self.indice
 
-            self.anexar_resp(nome_da_funcao, posicao_final,nome_fantasia)
+            self.anexar_resp(nome_da_funcao,
+                             posicao_final, nome_fantasia)
             self.corrige_props_resposta(nome_fantasia,
                                         resultado_entrada,
                                         posicao_comeco,
@@ -149,7 +150,8 @@ class Funcoes:
             posicao_final = posicao_comeco + len(string)
 
             self.corrige_posicoes(indice, posicao_final)
-            self.anexar_resp(nome_da_funcao, self.posicao_livre,nome_fantasia)
+            self.anexar_resp(nome_da_funcao,
+                             self.posicao_livre, nome_fantasia)
             self.corrige_props_resposta(nome_fantasia,
                                         resultado_entrada,
                                         posicao_comeco,
@@ -190,12 +192,12 @@ class Funcoes:
             escritor.write(string_saida)
             escritor.flush()
 
-    def corrige_props_resposta(self,nome_fantasia: str,
-                                    resultado: str,
-                                    posicao_comeco: int,
-                                    posicao_final: int,
-                                    indice_funcao: int,
-                                    edicao=False) -> None:
+    def corrige_props_resposta(self, nome_fantasia: str,
+                               resultado: str,
+                               posicao_comeco: int,
+                               posicao_final: int,
+                               indice_funcao: int,
+                               edicao=False) -> None:
 
         with open(ARQUIVO_TXT) as props:
             propriedades = props.readlines()
@@ -208,8 +210,8 @@ class Funcoes:
             indice_funcao
         ]
         string_props = (f"{nome_fantasia},{resultado},{resposta},"
-                       f"{posicao_comeco},{posicao_final},"
-                       f"{indice_funcao}\n")
+                        f"{posicao_comeco},{posicao_final},"
+                        f"{indice_funcao}\n")
         if not edicao:
             propriedades.insert(-1, string_props)
         else:
@@ -228,7 +230,8 @@ class Funcoes:
     def tratamento_para_nome(nome) -> str:
         return nome if (nome == NOME_FUNCAO_RESPOSTA) else f"_{nome}"
 
-    def tratamento_nomes_fantasia(self,nome_fantasia):
+    @staticmethod
+    def tratamento_nomes_fantasia(nome_fantasia):
         if (nome_fantasia != NOME_FUNCAO_RESPOSTA and
                 ((nome_fantasia.isdigit()) or (
                 nome_fantasia in LISTA_FUNCOES_ESPECIAIS))):
@@ -249,18 +252,21 @@ class Funcoes:
                     posicao_inicial_fragmento_de_retorno + len(nome))
 
                 fragmento_do_retorno = (
-                  fragmento_do_retorno[:posicao_inicial_fragmento_de_retorno] +
-                  fragmento_do_retorno[posicao_final_fragmento_de_retorno:])
+                  fragmento_do_retorno[
+                    :posicao_inicial_fragmento_de_retorno] +
+                  fragmento_do_retorno[
+                    posicao_final_fragmento_de_retorno:])
 
                 posicao_inicial = (acrescimo +
-                               posicao_inicial_fragmento_de_retorno)
+                                   posicao_inicial_fragmento_de_retorno)
                 posicao_final = (acrescimo +
                                  posicao_final_fragmento_de_retorno)
 
                 if nome != NOME_FUNCAO_RESPOSTA:
                     acrescimo += 3 + len(nome)
                     string = (string[:posicao_inicial] + "_" +
-                              f"{nome}" + "()" + string[posicao_final:])
+                              f"{nome}" + "()" +
+                              string[posicao_final:])
                 else:
                     resposta = str(self.resp())
                     acrescimo += len(resposta)
@@ -279,9 +285,9 @@ class Funcoes:
         if nome_fantasia == NOME_FUNCAO_RESPOSTA:
             self.modifica_resp(resp,resultado)
         elif nome_fantasia in self.funcoes_props:
-            self.editar_funcao(nome_fantasia, resp,resultado)
+            self.editar_funcao(nome_fantasia, resp, resultado)
         else:
-            self.nova_funcao(nome_fantasia, resp,resultado)
+            self.nova_funcao(nome_fantasia, resp, resultado)
 
     # ================================================================
 
@@ -305,8 +311,10 @@ class Funcoes:
         with open(ARQUIVO_FUNCOES) as leitor:
             original = leitor.read()
 
-        with open(ARQUIVO_FUNCOES, "w") as editor:
-            string = original[:vetor_resp[0]] + original[vetor_resp[1]:]
+        with (open(ARQUIVO_FUNCOES, "w") as editor):
+
+            string = (original[:vetor_resp[0]] +
+                      original[vetor_resp[1]:])
             editor.write(string)
             editor.flush()
 
@@ -314,8 +322,9 @@ class Funcoes:
         self.indice -= 1
         self.posicao_livre = vetor_resp[0]
 
-    def anexar_resp(self,nome_da_funcao,posicao_inicial,nome_fantasia):
-        with open(ARQUIVO_FUNCOES,"a") as arquivo:
+    def anexar_resp(self,nome_da_funcao,
+                    posicao_inicial,nome_fantasia):
+        with (open(ARQUIVO_FUNCOES,"a") as arquivo):
             resp = (f"def {NOME_FUNCAO_RESPOSTA}():\n" +
                     f"\treturn {nome_da_funcao}()\n"
                     )
@@ -324,16 +333,20 @@ class Funcoes:
             self.posicao_livre = posicao_inicial + len(resp)
             self.indice += 1
             resposta = self.resp()
-            self.funcoes_props[NOME_FUNCAO_RESPOSTA] =[nome_fantasia,
-                                                       resposta,
-                                                       posicao_inicial,
-                                                       self.posicao_livre,
-                                                       self.indice]
+            self.funcoes_props[NOME_FUNCAO_RESPOSTA] = (
+                [nome_fantasia,
+                    resposta,
+                    posicao_inicial,
+                    self.posicao_livre,
+                    self.indice]
+            )
 
         with open(ARQUIVO_TXT,"a") as props:
-            props.write(f"{NOME_FUNCAO_RESPOSTA},{nome_fantasia},{resposta},"
-                                 f"{posicao_inicial},{self.posicao_livre},"
-                                  f"{self.indice}\n")
+            props.write(f"{NOME_FUNCAO_RESPOSTA},"
+                        f"{nome_fantasia},"
+                        f"{resposta},"
+                        f"{posicao_inicial},{self.posicao_livre},"
+                        f"{self.indice}\n")
             props.flush()
 
     def modifica_resp(self, retorno: str,
@@ -355,7 +368,8 @@ class Funcoes:
                       resp)
 
             self.posicao_livre = posicao_inicial + len(resp)
-            self.funcoes_props[NOME_FUNCAO_RESPOSTA][3] = self.posicao_livre
+            self.funcoes_props[NOME_FUNCAO_RESPOSTA][3] = (
+                self.posicao_livre)
             editor.write(string)
             editor.flush()
 
@@ -365,8 +379,10 @@ class Funcoes:
         self.funcoes_props[NOME_FUNCAO_RESPOSTA][1] = resposta
 
         with open(ARQUIVO_TXT,"w") as escritor:
-            original_txt[indice] = (f"{NOME_FUNCAO_RESPOSTA},{retorno_entrada},{resposta},"
-                                    f"{posicao_inicial},{self.posicao_livre},"
+            original_txt[indice] = (f"{NOME_FUNCAO_RESPOSTA},"
+                                    f"{retorno_entrada},{resposta},"
+                                    f"{posicao_inicial},"
+                                    f"{self.posicao_livre},"
                                     f"{indice}\n")
             string = ""
             for linha in original_txt:
@@ -374,12 +390,12 @@ class Funcoes:
             escritor.write(string)
             escritor.flush()
 
-    def resp(self,funcao: str = "") -> Any:
+    def resp(self, funcao: str = "") -> Any:
         if funcao != "" and funcao != NOME_FUNCAO_RESPOSTA:
             if funcao in self.funcoes_props:
                 nome = self.tratamento_para_nome(funcao)
                 self.modifica_resp(nome + "()",nome)
             else:
-                self.nova_funcao(funcao,"0","0")
+                self.nova_funcao(funcao,"0", "0")
         reload(f)
         return f.resp()
